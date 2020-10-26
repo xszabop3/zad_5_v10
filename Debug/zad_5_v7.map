@@ -1331,24 +1331,24 @@ OUTPUT(zad_5_v7.elf elf32-littlearm)
  .debug_line    0x00000000000027fd      0x622 Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_ll_usart.o
  .debug_line    0x0000000000002e1f      0x75c Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_ll_utils.o
 
-.debug_str      0x0000000000000000    0x6f9ec
- .debug_str     0x0000000000000000    0x6d31f Core/Src/main.o
-                                      0x6d60a (size before relaxing)
- .debug_str     0x000000000006d31f      0x141 Core/Src/stm32f3xx_it.o
+.debug_str      0x0000000000000000    0x6fa1b
+ .debug_str     0x0000000000000000    0x6d315 Core/Src/main.o
+                                      0x6d600 (size before relaxing)
+ .debug_str     0x000000000006d315      0x17a Core/Src/stm32f3xx_it.o
                                       0x6cd05 (size before relaxing)
- .debug_str     0x000000000006d460       0x73 Core/Src/system_stm32f3xx.o
+ .debug_str     0x000000000006d48f       0x73 Core/Src/system_stm32f3xx.o
                                       0x65202 (size before relaxing)
- .debug_str     0x000000000006d4d3       0x36 Core/Startup/startup_stm32f303k8tx.o
+ .debug_str     0x000000000006d502       0x36 Core/Startup/startup_stm32f303k8tx.o
                                          0x6f (size before relaxing)
- .debug_str     0x000000000006d509      0x477 Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_ll_exti.o
+ .debug_str     0x000000000006d538      0x477 Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_ll_exti.o
                                       0x65b22 (size before relaxing)
- .debug_str     0x000000000006d980      0x600 Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_ll_gpio.o
+ .debug_str     0x000000000006d9af      0x600 Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_ll_gpio.o
                                       0x66551 (size before relaxing)
- .debug_str     0x000000000006df80      0x502 Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_ll_rcc.o
+ .debug_str     0x000000000006dfaf      0x502 Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_ll_rcc.o
                                       0x679a3 (size before relaxing)
- .debug_str     0x000000000006e482      0x8ad Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_ll_usart.o
+ .debug_str     0x000000000006e4b1      0x8ad Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_ll_usart.o
                                       0x694b8 (size before relaxing)
- .debug_str     0x000000000006ed2f      0xcbd Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_ll_utils.o
+ .debug_str     0x000000000006ed5e      0xcbd Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_ll_utils.o
                                       0x6a213 (size before relaxing)
 
 .comment        0x0000000000000000       0x7b

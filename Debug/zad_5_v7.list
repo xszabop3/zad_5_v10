@@ -39,11 +39,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  17 .debug_line   0000357b  00000000  00000000  0003a4de  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    0006f9ec  00000000  00000000  0003da59  2**0
+ 18 .debug_str    0006fa1b  00000000  00000000  0003da59  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  000ad445  2**0
+ 19 .comment      0000007b  00000000  00000000  000ad474  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00001570  00000000  00000000  000ad4c0  2**2
+ 20 .debug_frame  00001570  00000000  00000000  000ad4f0  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -999,7 +999,7 @@ uint16_t cnt=0;
  80006fa:	230a      	movs	r3, #10
  80006fc:	9300      	str	r3, [sp, #0]
  80006fe:	230f      	movs	r3, #15
- 8000700:	2201      	movs	r2, #1
+ 8000700:	2200      	movs	r2, #0
  8000702:	2108      	movs	r1, #8
  8000704:	f04f 4090 	mov.w	r0, #1207959552	; 0x48000000
  8000708:	f000 f914 	bl	8000934 <checkButtonState>
@@ -1311,10 +1311,10 @@ static void MX_GPIO_Init(void)
  80008d4:	f887 3025 	strb.w	r3, [r7, #37]	; 0x25
   if(BUTTON_EXTI_TRIGGER)
   {EXTI_InitStruct.Trigger = LL_EXTI_TRIGGER_FALLING;}
- 80008d8:	2302      	movs	r3, #2
- 80008da:	f887 3026 	strb.w	r3, [r7, #38]	; 0x26
   else
   {EXTI_InitStruct.Trigger = LL_EXTI_TRIGGER_RISING;}
+ 80008d8:	2301      	movs	r3, #1
+ 80008da:	f887 3026 	strb.w	r3, [r7, #38]	; 0x26
   LL_EXTI_Init(&EXTI_InitStruct);
  80008de:	f107 031c 	add.w	r3, r7, #28
  80008e2:	4618      	mov	r0, r3
@@ -2525,6 +2525,11 @@ uint32_t LL_EXTI_Init(LL_EXTI_InitTypeDef *EXTI_InitStruct)
  8000f2e:	bd80      	pop	{r7, pc}
 
 08000f30 <LL_GPIO_SetPinMode>:
+  *         @arg @ref LL_GPIO_MODE_ALTERNATE
+  *         @arg @ref LL_GPIO_MODE_ANALOG
+  * @retval None
+  */
+__STATIC_INLINE void LL_GPIO_SetPinMode(GPIO_TypeDef *GPIOx, uint32_t Pin, uint32_t Mode)
 {
  8000f30:	b480      	push	{r7}
  8000f32:	b089      	sub	sp, #36	; 0x24
@@ -2537,10 +2542,20 @@ uint32_t LL_EXTI_Init(LL_EXTI_InitTypeDef *EXTI_InitStruct)
  8000f3e:	681a      	ldr	r2, [r3, #0]
  8000f40:	68bb      	ldr	r3, [r7, #8]
  8000f42:	617b      	str	r3, [r7, #20]
+  uint32_t result;
+
+#if ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
+     (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
+     (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    )
    __ASM volatile ("rbit %0, %1" : "=r" (result) : "r" (value) );
  8000f44:	697b      	ldr	r3, [r7, #20]
  8000f46:	fa93 f3a3 	rbit	r3, r3
  8000f4a:	613b      	str	r3, [r7, #16]
+    result |= value & 1U;
+    s--;
+  }
+  result <<= s;                        /* shift when v's highest bits are zero */
+#endif
   return result;
  8000f4c:	693b      	ldr	r3, [r7, #16]
  8000f4e:	fab3 f383 	clz	r3, r3
@@ -2574,6 +2589,11 @@ uint32_t LL_EXTI_Init(LL_EXTI_InitTypeDef *EXTI_InitStruct)
  8000f8c:	4770      	bx	lr
 
 08000f8e <LL_GPIO_SetPinOutputType>:
+  *         @arg @ref LL_GPIO_OUTPUT_PUSHPULL
+  *         @arg @ref LL_GPIO_OUTPUT_OPENDRAIN
+  * @retval None
+  */
+__STATIC_INLINE void LL_GPIO_SetPinOutputType(GPIO_TypeDef *GPIOx, uint32_t PinMask, uint32_t OutputType)
 {
  8000f8e:	b480      	push	{r7}
  8000f90:	b085      	sub	sp, #20
@@ -2601,6 +2621,11 @@ uint32_t LL_EXTI_Init(LL_EXTI_InitTypeDef *EXTI_InitStruct)
  8000fbc:	4770      	bx	lr
 
 08000fbe <LL_GPIO_SetPinSpeed>:
+  *         @arg @ref LL_GPIO_SPEED_FREQ_MEDIUM
+  *         @arg @ref LL_GPIO_SPEED_FREQ_HIGH
+  * @retval None
+  */
+__STATIC_INLINE void LL_GPIO_SetPinSpeed(GPIO_TypeDef *GPIOx, uint32_t Pin, uint32_t  Speed)
 {
  8000fbe:	b480      	push	{r7}
  8000fc0:	b089      	sub	sp, #36	; 0x24
@@ -2642,6 +2667,7 @@ uint32_t LL_EXTI_Init(LL_EXTI_InitTypeDef *EXTI_InitStruct)
  800100a:	431a      	orrs	r2, r3
  800100c:	68fb      	ldr	r3, [r7, #12]
  800100e:	609a      	str	r2, [r3, #8]
+             (Speed << (POSITION_VAL(Pin) * 2U)));
 }
  8001010:	bf00      	nop
  8001012:	3724      	adds	r7, #36	; 0x24
@@ -2650,6 +2676,11 @@ uint32_t LL_EXTI_Init(LL_EXTI_InitTypeDef *EXTI_InitStruct)
  800101a:	4770      	bx	lr
 
 0800101c <LL_GPIO_SetPinPull>:
+  *         @arg @ref LL_GPIO_PULL_UP
+  *         @arg @ref LL_GPIO_PULL_DOWN
+  * @retval None
+  */
+__STATIC_INLINE void LL_GPIO_SetPinPull(GPIO_TypeDef *GPIOx, uint32_t Pin, uint32_t Pull)
 {
  800101c:	b480      	push	{r7}
  800101e:	b089      	sub	sp, #36	; 0x24
@@ -2699,6 +2730,11 @@ uint32_t LL_EXTI_Init(LL_EXTI_InitTypeDef *EXTI_InitStruct)
  8001078:	4770      	bx	lr
 
 0800107a <LL_GPIO_SetAFPin_0_7>:
+  *         @arg @ref LL_GPIO_AF_14
+  *         @arg @ref LL_GPIO_AF_15
+  * @retval None
+  */
+__STATIC_INLINE void LL_GPIO_SetAFPin_0_7(GPIO_TypeDef *GPIOx, uint32_t Pin, uint32_t Alternate)
 {
  800107a:	b480      	push	{r7}
  800107c:	b089      	sub	sp, #36	; 0x24
@@ -2740,6 +2776,7 @@ uint32_t LL_EXTI_Init(LL_EXTI_InitTypeDef *EXTI_InitStruct)
  80010c6:	431a      	orrs	r2, r3
  80010c8:	68fb      	ldr	r3, [r7, #12]
  80010ca:	621a      	str	r2, [r3, #32]
+             (Alternate << (POSITION_VAL(Pin) * 4U)));
 }
  80010cc:	bf00      	nop
  80010ce:	3724      	adds	r7, #36	; 0x24
@@ -2748,6 +2785,11 @@ uint32_t LL_EXTI_Init(LL_EXTI_InitTypeDef *EXTI_InitStruct)
  80010d6:	4770      	bx	lr
 
 080010d8 <LL_GPIO_SetAFPin_8_15>:
+  *         @arg @ref LL_GPIO_AF_14
+  *         @arg @ref LL_GPIO_AF_15
+  * @retval None
+  */
+__STATIC_INLINE void LL_GPIO_SetAFPin_8_15(GPIO_TypeDef *GPIOx, uint32_t Pin, uint32_t Alternate)
 {
  80010d8:	b480      	push	{r7}
  80010da:	b089      	sub	sp, #36	; 0x24
@@ -2791,6 +2833,7 @@ uint32_t LL_EXTI_Init(LL_EXTI_InitTypeDef *EXTI_InitStruct)
  8001128:	431a      	orrs	r2, r3
  800112a:	68fb      	ldr	r3, [r7, #12]
  800112c:	625a      	str	r2, [r3, #36]	; 0x24
+             (Alternate << (POSITION_VAL(Pin >> 8U) * 4U)));
 }
  800112e:	bf00      	nop
  8001130:	3724      	adds	r7, #36	; 0x24
@@ -2970,6 +3013,11 @@ ErrorStatus LL_GPIO_Init(GPIO_TypeDef *GPIOx, LL_GPIO_InitTypeDef *GPIO_InitStru
 	...
 
 0800121c <LL_RCC_HSI_IsReady>:
+  * @brief  Check if HSI clock is ready
+  * @rmtoll CR           HSIRDY        LL_RCC_HSI_IsReady
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_RCC_HSI_IsReady(void)
 {
  800121c:	b480      	push	{r7}
  800121e:	af00      	add	r7, sp, #0
@@ -2990,6 +3038,11 @@ ErrorStatus LL_GPIO_Init(GPIO_TypeDef *GPIOx, LL_GPIO_InitTypeDef *GPIO_InitStru
  800123c:	40021000 	.word	0x40021000
 
 08001240 <LL_RCC_LSE_IsReady>:
+  * @brief  Check if LSE oscillator Ready
+  * @rmtoll BDCR         LSERDY        LL_RCC_LSE_IsReady
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_RCC_LSE_IsReady(void)
 {
  8001240:	b480      	push	{r7}
  8001242:	af00      	add	r7, sp, #0
@@ -3010,6 +3063,11 @@ ErrorStatus LL_GPIO_Init(GPIO_TypeDef *GPIOx, LL_GPIO_InitTypeDef *GPIO_InitStru
  8001260:	40021000 	.word	0x40021000
 
 08001264 <LL_RCC_GetSysClkSource>:
+  *         @arg @ref LL_RCC_SYS_CLKSOURCE_STATUS_HSI
+  *         @arg @ref LL_RCC_SYS_CLKSOURCE_STATUS_HSE
+  *         @arg @ref LL_RCC_SYS_CLKSOURCE_STATUS_PLL
+  */
+__STATIC_INLINE uint32_t LL_RCC_GetSysClkSource(void)
 {
  8001264:	b480      	push	{r7}
  8001266:	af00      	add	r7, sp, #0
@@ -3593,6 +3651,11 @@ uint32_t RCC_PLL_GetFreqDomain_SYS(void)
  8001558:	007a1200 	.word	0x007a1200
 
 0800155c <LL_USART_IsEnabled>:
+  * @rmtoll CR1          UE            LL_USART_IsEnabled
+  * @param  USARTx USART Instance
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_USART_IsEnabled(USART_TypeDef *USARTx)
 {
  800155c:	b480      	push	{r7}
  800155e:	b083      	sub	sp, #12
@@ -3615,6 +3678,11 @@ uint32_t RCC_PLL_GetFreqDomain_SYS(void)
  8001580:	4770      	bx	lr
 
 08001582 <LL_USART_SetStopBitsLength>:
+  *         @arg @ref LL_USART_STOPBITS_1_5
+  *         @arg @ref LL_USART_STOPBITS_2
+  * @retval None
+  */
+__STATIC_INLINE void LL_USART_SetStopBitsLength(USART_TypeDef *USARTx, uint32_t StopBits)
 {
  8001582:	b480      	push	{r7}
  8001584:	b083      	sub	sp, #12
@@ -3637,6 +3705,11 @@ uint32_t RCC_PLL_GetFreqDomain_SYS(void)
  80015a6:	4770      	bx	lr
 
 080015a8 <LL_USART_SetHWFlowCtrl>:
+  *         @arg @ref LL_USART_HWCONTROL_CTS
+  *         @arg @ref LL_USART_HWCONTROL_RTS_CTS
+  * @retval None
+  */
+__STATIC_INLINE void LL_USART_SetHWFlowCtrl(USART_TypeDef *USARTx, uint32_t HardwareFlowControl)
 {
  80015a8:	b480      	push	{r7}
  80015aa:	b083      	sub	sp, #12
@@ -3659,6 +3732,11 @@ uint32_t RCC_PLL_GetFreqDomain_SYS(void)
  80015cc:	4770      	bx	lr
 
 080015ce <LL_USART_SetBaudRate>:
+  * @param  BaudRate Baud Rate
+  * @retval None
+  */
+__STATIC_INLINE void LL_USART_SetBaudRate(USART_TypeDef *USARTx, uint32_t PeriphClk, uint32_t OverSampling,
+                                          uint32_t BaudRate)
 {
  80015ce:	b490      	push	{r4, r7}
  80015d0:	b086      	sub	sp, #24
@@ -3667,10 +3745,14 @@ uint32_t RCC_PLL_GetFreqDomain_SYS(void)
  80015d6:	60b9      	str	r1, [r7, #8]
  80015d8:	607a      	str	r2, [r7, #4]
  80015da:	603b      	str	r3, [r7, #0]
+  uint32_t usartdiv;
+  register uint32_t brrtemp;
+
   if (OverSampling == LL_USART_OVERSAMPLING_8)
  80015dc:	687b      	ldr	r3, [r7, #4]
  80015de:	f5b3 4f00 	cmp.w	r3, #32768	; 0x8000
  80015e2:	d116      	bne.n	8001612 <LL_USART_SetBaudRate+0x44>
+  {
     usartdiv = (uint16_t)(__LL_USART_DIV_SAMPLING8(PeriphClk, BaudRate));
  80015e4:	68bb      	ldr	r3, [r7, #8]
  80015e6:	005a      	lsls	r2, r3, #1
@@ -3694,6 +3776,11 @@ uint32_t RCC_PLL_GetFreqDomain_SYS(void)
     USARTx->BRR = brrtemp;
  800160c:	68fb      	ldr	r3, [r7, #12]
  800160e:	60dc      	str	r4, [r3, #12]
+  }
+  else
+  {
+    USARTx->BRR = (uint16_t)(__LL_USART_DIV_SAMPLING16(PeriphClk, BaudRate));
+  }
 }
  8001610:	e00a      	b.n	8001628 <LL_USART_SetBaudRate+0x5a>
     USARTx->BRR = (uint16_t)(__LL_USART_DIV_SAMPLING16(PeriphClk, BaudRate));
